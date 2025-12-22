@@ -17,6 +17,49 @@ const router = createBrowserRouter([
     path: "/signup",
     Component: SignUp,
     //action: signupAction
+  },
+  {
+    path: "/refresh-token",
+  },
+  {
+    path: "/",
+    children: [
+      {
+        index: true,
+      },
+      {
+        path: "blogs",
+      },
+      {
+        path: "blogs/:slug",
+      }
+    ]
+  },
+  {
+    path: "/admin",
+    children: [
+      {
+        path: "dashboard",
+      },
+      {
+        path: "blogs",
+      },
+      {
+        path: "blogs/create",
+      },
+      {
+        path: "blogs/:slug/edit",
+      },
+      {
+        path: "comments",
+      },
+      {
+        path: "users",
+      }
+    ]
+  },
+  {
+    path: "/settings"
   }
 ])
 

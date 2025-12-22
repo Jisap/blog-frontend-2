@@ -6,7 +6,7 @@ import { AxiosError } from "axios";
 import type { ActionResponse, AuthResponse } from "@/types";
 
 
-
+// Action para el formulario de registro
 const signupAction: ActionFunction = async ({ request }) => {
   const data = await request.json()
 

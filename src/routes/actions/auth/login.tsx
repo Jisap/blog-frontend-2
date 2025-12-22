@@ -4,7 +4,7 @@ import { AxiosError } from "axios";
 import type { ActionResponse, AuthResponse } from "@/types";
 
 
-
+// Action para el formulario de login
 const loginAction: ActionFunction = async ({ request }) => {
   const data = await request.json()
 

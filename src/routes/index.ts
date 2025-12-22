@@ -1,6 +1,8 @@
 import { Login } from "@/pages/auth/Login";
 import SignUp from "@/pages/auth/Signup";
 import { createBrowserRouter } from "react-router";
+import loginAction from "./actions/auth/login";
+import signupAction from "./actions/auth/signup";
 
 
 
@@ -11,12 +13,12 @@ const router = createBrowserRouter([
   {
     path: "/login",
     Component: Login,
-    //action: loginAction
+    action: loginAction
   },
   {
     path: "/signup",
     Component: SignUp,
-    //action: signupAction
+    action: signupAction
   },
   {
     path: "/refresh-token",

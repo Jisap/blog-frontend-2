@@ -4,6 +4,7 @@ import { createBrowserRouter } from "react-router";
 import loginAction from "./actions/auth/login";
 import signupAction from "./actions/auth/signup";
 import { RootLayout } from "@/components/layouts/Root";
+import { Home } from "@/pages/user/Home";
 
 
 
@@ -30,6 +31,7 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
+        Component: Home,
       },
       {
         path: "blogs",

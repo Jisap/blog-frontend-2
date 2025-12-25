@@ -9,7 +9,7 @@ export const Home = () => {
   return (
     <Page>
       <Hero />
-      {/* <RecentBlogs /> */}
+      <RecentBlogs />
     </Page>
   )
 }

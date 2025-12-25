@@ -11,12 +11,9 @@ export interface HomeLoaderResponse {
 
 const homeLoader: LoaderFunction = async () => {
   try {
-    // const accessToken = localStorage.getItem("accessToken");
-    // const headers = accessToken ? { Authorization: `Bearer ${accessToken}` } : {};
 
     const { data: recentBlog } = await bitblogApi.get("/blogs", {
       params: { limit: 4 },
-      //headers,
     })
 
     const { data: allBlog } = await bitblogApi.get("/blogs", {
@@ -24,7 +21,6 @@ const homeLoader: LoaderFunction = async () => {
         offset: 4,
         limit: 12,
       },
-      //headers,
     });
 
     return { recentBlog, allBlog } as HomeLoaderResponse

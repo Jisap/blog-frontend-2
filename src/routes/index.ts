@@ -5,6 +5,9 @@ import loginAction from "./actions/auth/login";
 import signupAction from "./actions/auth/signup";
 import { RootLayout } from "@/components/layouts/Root";
 import { Home } from "@/pages/user/Home";
+import homeLoader from "./loaders/user/homeLoader";
+import { RootErrorBoundary } from "@/pages/error/Root";
+import refreshTokenLoader from "./loaders/refreshToken";
 
 
 
@@ -24,14 +27,17 @@ const router = createBrowserRouter([
   },
   {
     path: "/refresh-token",
+    loader: refreshTokenLoader
   },
   {
     path: "/",
     Component: RootLayout,
+    ErrorBoundary: RootErrorBoundary,
     children: [
       {
         index: true,
         Component: Home,
+        loader: homeLoader,
       },
       {
         path: "blogs",

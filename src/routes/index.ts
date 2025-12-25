@@ -8,6 +8,8 @@ import { Home } from "@/pages/user/Home";
 import homeLoader from "./loaders/user/homeLoader";
 import { RootErrorBoundary } from "@/pages/error/Root";
 import refreshTokenLoader from "./loaders/refreshToken";
+import { Blogs } from "@/pages/user/blogs";
+import userBlogLoader from "./loaders/user/userBlogLoader";
 
 
 
@@ -40,6 +42,8 @@ const router = createBrowserRouter([
       },
       {
         path: "blogs",
+        Component: Blogs,
+        loader: userBlogLoader,
       },
       {
         path: "blogs/:slug",

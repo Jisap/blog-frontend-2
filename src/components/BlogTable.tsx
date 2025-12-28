@@ -6,17 +6,17 @@ import {
 } from "@tanstack/react-table";
 import { motion } from "motion/react";
 import { Link, useFetcher } from "react-router";
-import  { Editor } from "@tiptap/react";
+import { Editor } from "@tiptap/react";
 import { formatDistanceToNowStrict } from "date-fns";
 import { cn, getUsername } from "@/lib/utils";
 import StarterKit from "@tiptap/starter-kit";
-import { 
-  Table, 
+import {
+  Table,
   TableBody,
-  TableRow, 
-  TableCell, 
-  TableHead, 
-  TableHeader 
+  TableRow,
+  TableCell,
+  TableHead,
+  TableHeader
 } from "./ui/table";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -82,11 +82,11 @@ const MotionTableRow = motion.create(TableRow);
 
 // Componente de acciones para cada blog
 const BlogActionDropdown = ({ blog }: { blog: Blog }) => {
-  
+
   const fetcher = useFetcher();
-  
+
   const isPublished = useMemo(() => blog.status === "published", [blog.status]);
-  
+
   const isChanging = fetcher.state !== "idle";
   const isUpdating = isChanging && fetcher.formMethod === "PUT"
   const isDeleting = isChanging && fetcher.formMethod === "DELETE"
@@ -111,11 +111,11 @@ const BlogActionDropdown = ({ blog }: { blog: Blog }) => {
 
         <AlertDialog>
           <AlertDialogTrigger asChild>
-            <DropdownMenuItem 
+            <DropdownMenuItem
               onSelect={(e) => e.preventDefault()}
               disabled={isUpdating}
             >
-              {isUpdating && <Loader2Icon className="animate-spin"/>}
+              {isUpdating && <Loader2Icon className="animate-spin" />}
               {isPublished ? "Unpublish" : "Publish"}
             </DropdownMenuItem>
           </AlertDialogTrigger>
@@ -127,7 +127,7 @@ const BlogActionDropdown = ({ blog }: { blog: Blog }) => {
               </AlertDialogTitle>
 
               <AlertDialogDescription>
-                { isPublished 
+                {isPublished
                   ? "This blog post will no longer be visible to readers. You can publish it again anytime. Are you sure to unpublish it ?"
                   : "Once published this blog post will be visible to everyone. Are you sure to publish it ?"
                 }
@@ -140,7 +140,7 @@ const BlogActionDropdown = ({ blog }: { blog: Blog }) => {
                 onClick={() => {
                   const formData = new FormData();
                   formData.append("status", isPublished ? "draft" : "published"); // Aquí se determina el nuevo estado. Al abrir el modal se determina cual es el estado actual y en consecuencia cual será el nuevo
-                
+
                   fetcher.submit(formData, {
                     action: `/admin/blogs/${blog.slug}/edit`, // Se envía al servidor el slug y estado de la publicación
                     method: "put",
@@ -197,7 +197,7 @@ const BlogActionDropdown = ({ blog }: { blog: Blog }) => {
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>
-                
+
       </DropdownMenuContent>
     </DropdownMenu>
   )
@@ -205,7 +205,7 @@ const BlogActionDropdown = ({ blog }: { blog: Blog }) => {
 
 
 // Componente de definición de las columnas de la tabla
-export const columns:ColumnDef<Blog>[] = [ // Cada objeto en este array define una columna
+export const columns: ColumnDef<Blog>[] = [ // Cada objeto en este array define una columna
   {
     accessorKey: "title", // De qué propiedad del objeto 'Blog' sacar los datos
     header: "Blog",       // El texto que aparecerá en la cabecera <th>
@@ -225,18 +225,18 @@ export const columns:ColumnDef<Blog>[] = [ // Cada objeto en este array define u
       })
 
       return (
-        <Link 
+        <Link
           className="flex items-center gap-4 group"
-          to={`/blogs/${blog.slug}`} 
-          viewTransition 
+          to={`/blogs/${blog.slug}`}
+          viewTransition
         >
           <figure className="shrink-0 w-[120px] h-[68px] rounded-md overflow-hidden">
-            <img 
-              src={blog.banner.url} 
-              alt={blog.title} 
+            <img
+              src={blog.banner.url}
+              alt={blog.title}
               width={blog.banner.width}
               height={blog.banner.height}
-              className="w-full h-full object-cover" 
+              className="w-full h-full object-cover"
             />
           </figure>
 
@@ -258,13 +258,13 @@ export const columns:ColumnDef<Blog>[] = [ // Cada objeto en este array define u
     header: "Author",
     cell: ({ row }) => {
       const author = row.getValue("author") as User;
-    
+
       return (
         <div className="flex items-center gap-2">
-          <Avatar 
-            email={author.email} 
+          <Avatar
+            email={author.email}
             name={getUsername(author)}
-            size="24" 
+            size="24"
             className="rounded-md"
           />
 
@@ -280,7 +280,7 @@ export const columns:ColumnDef<Blog>[] = [ // Cada objeto en este array define u
     header: "Status",
     cell: ({ row }) => {
       const status = row.getValue("status") as "draft" | "published";
-    
+
       return (
         <Badge
           variant="outline"
@@ -297,7 +297,7 @@ export const columns:ColumnDef<Blog>[] = [ // Cada objeto en este array define u
               ? "bg-emerald-500 dark:bg-emerald-600"
               : "bg-amber-500 dark:bg-amber-600"
           )}></div>
-            {status}
+          {status}
         </Badge>
       )
     }
@@ -336,7 +336,7 @@ export const columns:ColumnDef<Blog>[] = [ // Cada objeto en este array define u
 // Puede renderizar una tabla para cualquier tipo de datos (TData),
 // no solo para blogs, siempre que se le pasen las `columns` y `data` correctas.
 export const BlogTable = <TData, TValue>({ columns, data }: BlogTableProps<TData, TValue>) => {
-  
+
   const table = useReactTable({        // Le pasamos la data y las columnas y tanstack nos devuelve un objeto table
     data,
     columns,
@@ -367,9 +367,9 @@ export const BlogTable = <TData, TValue>({ columns, data }: BlogTableProps<TData
         animate="to"
         variants={tableBodyVariant}
       >
-        {table.getRowModel().rows.length 
+        {table.getRowModel().rows.length
           //  Itera sobre las filas para crear los <tr>.
-          ? ( table.getRowModel().rows.map((row) => (
+          ? (table.getRowModel().rows.map((row) => (
             <MotionTableRow
               key={row.id}
               data-state={row.getIsSelected() && "selected"}
@@ -388,16 +388,16 @@ export const BlogTable = <TData, TValue>({ columns, data }: BlogTableProps<TData
               ))}
             </MotionTableRow>
           ))
-        ) : (
+          ) : (
             <TableRow>
-              <TableCell 
+              <TableCell
                 colSpan={columns.length}
                 className="h-24 text-center"
               >
-                No results 
+                No results
               </TableCell>
             </TableRow>
-        )}
+          )}
       </MotionTableBody>
     </Table>
   )

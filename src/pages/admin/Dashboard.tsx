@@ -1,8 +1,10 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { BlogTable, columns } from "@/components/BlogTable";
+import { Button } from "@/components/ui/button";
+import { Card, CardAction, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useUser } from "@/hooks/useUser";
 import type { DashboardData } from "@/routes/loaders/admin/dashboardLoader";
 import { MessageSquareIcon, TextIcon, UsersRoundIcon } from "lucide-react";
-import { useLoaderData } from "react-router";
+import { Link, useLoaderData } from "react-router";
 
 
 
@@ -71,6 +73,39 @@ export const Dashboard = () => {
           </CardContent>
         </Card>
       </div>
+
+      {/* Recent Articles */}
+      <Card className="gap-4 py-4">
+        <CardHeader className="flex items-center gap-2.5 px-4">
+          <div className="bg-muted text-muted-foreground max-w-max p-2 rounded-lg">
+            <TextIcon size={18} />
+          </div>
+
+          <CardTitle className="font-normal text-lg">
+            Recent Article
+          </CardTitle>
+
+          <CardAction className="ms-auto">
+            <Button
+              variant="link"
+              size="sm"
+              asChild
+            >
+              <Link to="/admin/blogs">
+                See all
+              </Link>
+            </Button>
+          </CardAction>
+        </CardHeader>
+
+        <CardContent className="px-4">
+          <BlogTable
+            columns={columns}        // Esquema de contrucción de la tabla
+            data={loaderData.blogs}  // Datos del loader 
+          />
+        </CardContent>
+      </Card>
+
     </div>
   )
 }

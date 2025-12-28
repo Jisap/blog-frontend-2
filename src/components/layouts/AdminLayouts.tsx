@@ -1,7 +1,7 @@
 import { Outlet } from "react-router"
 import { SidebarInset, SidebarProvider } from "../ui/sidebar"
-import TopAppBar from "../TopAppBar"
-import AppSidebar from "../AppSidebar"
+import { TopAppBar } from "../TopAppBar"
+import { AppSidebar } from "../AppSidebar"
 
 export const AdminLayout = () => {
   return (

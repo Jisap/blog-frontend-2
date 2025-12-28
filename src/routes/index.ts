@@ -18,6 +18,8 @@ import userBlogLoader from "./loaders/user/userBlogLoader";
 import blogDetailLoader from "./loaders/user/blogDetailsLoader";
 import { AdminLayout } from "@/components/layouts/AdminLayouts";
 import adminLoader from "./loaders/admin/adminLoader";
+import { Dashboard } from "@/pages/admin/Dashboard";
+import dashboardLoader from "./loaders/admin/dashboardLoader";
 
 
 
@@ -72,6 +74,9 @@ const router = createBrowserRouter([
     children: [
       {
         path: "dashboard",
+        Component: Dashboard,
+        loader: dashboardLoader,
+        handle: { breadcrumb: "Dashboard" }
       },
       {
         path: "blogs",

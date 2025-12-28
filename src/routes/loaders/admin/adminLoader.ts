@@ -19,10 +19,10 @@ const adminLoader: LoaderFunction = async () => {
         Authorization: `Bearer ${accessToken}`
       }
     })
+    console.log("data", data)
+    if (data.data.role !== "admin") return redirect("/");
 
-    if (data.user.role !== "admin") return redirect("/");
-
-    return data;
+    return data.data;
 
 
   } catch (error) {

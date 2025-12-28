@@ -9,25 +9,20 @@ import { AxiosError } from "axios";
 const adminLoader: LoaderFunction = async () => {
 
   const accessToken = localStorage.getItem("accessToken");
-  console.log("[AdminLoader] Checking token:", !!accessToken);
 
   if (!accessToken) {
-    console.warn("[AdminLoader] No token found, redirecting to /");
     return redirect("/");
   }
 
 
   try {
-    console.log("[AdminLoader] Fetching /users/current");
     const { data } = await bitblogApi.get(`/users/current`, {
       headers: {
         Authorization: `Bearer ${accessToken}`
       }
     })
 
-
     const userRole = data?.data?.role;
-
 
     if (userRole !== "admin") {
       return redirect("/");

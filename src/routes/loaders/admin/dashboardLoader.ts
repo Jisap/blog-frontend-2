@@ -24,7 +24,7 @@ const dashboardLoader: LoaderFunction = async () => {
   try {
 
     const blogsResponse = await bitblogApi.get(`/blogs`, {
-     params: { limit: 5 },
+      params: { limit: 5 },
     });
 
     const commentsResponse = await bitblogApi.get(`/comments`, {

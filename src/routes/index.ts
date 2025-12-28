@@ -1,18 +1,23 @@
-import { Login } from "@/pages/auth/Login";
-import SignUp from "@/pages/auth/Signup";
 import { createBrowserRouter } from "react-router";
 import loginAction from "./actions/auth/login";
 import signupAction from "./actions/auth/signup";
+
 import { RootLayout } from "@/components/layouts/Root";
+
+import { Login } from "@/pages/auth/Login";
+import SignUp from "@/pages/auth/Signup";
 import { Home } from "@/pages/user/Home";
-import homeLoader from "./loaders/user/homeLoader";
 import { RootErrorBoundary } from "@/pages/error/Root";
-import refreshTokenLoader from "./loaders/refreshToken";
-import { Blogs } from "@/pages/user/blogs";
-import userBlogLoader from "./loaders/user/userBlogLoader";
+import { Blogs } from "@/pages/user/Blogs";
 import { BlogDetail } from "@/pages/user/Blogdetail";
-import blogDetailLoader from "./loaders/user/blogDetailsLoader";
 import { About } from "@/pages/user/About";
+
+import homeLoader from "./loaders/user/homeLoader";
+import refreshTokenLoader from "./loaders/refreshToken";
+import userBlogLoader from "./loaders/user/userBlogLoader";
+import blogDetailLoader from "./loaders/user/blogDetailsLoader";
+import { AdminLayout } from "@/components/layouts/AdminLayouts";
+import adminLoader from "./loaders/admin/adminLoader";
 
 
 
@@ -61,6 +66,9 @@ const router = createBrowserRouter([
   },
   {
     path: "/admin",
+    Component: AdminLayout,
+    loader: adminLoader,
+    ErrorBoundary: RootErrorBoundary,
     children: [
       {
         path: "dashboard",

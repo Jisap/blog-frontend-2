@@ -20,6 +20,8 @@ import { AdminLayout } from "@/components/layouts/AdminLayouts";
 import adminLoader from "./loaders/admin/adminLoader";
 import { Dashboard } from "@/pages/admin/Dashboard";
 import dashboardLoader from "./loaders/admin/dashboardLoader";
+import { BlogsAdmin } from "@/pages/admin/Blogs";
+import allBlogsLoader from "./loaders/admin/allBlogsLoader";
 
 
 
@@ -80,6 +82,9 @@ const router = createBrowserRouter([
       },
       {
         path: "blogs",
+        Component: BlogsAdmin,
+        loader: allBlogsLoader,
+        handle: { breadcrumb: "Blogs" }
       },
       {
         path: "blogs/create",

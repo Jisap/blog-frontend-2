@@ -22,6 +22,8 @@ import { Dashboard } from "@/pages/admin/Dashboard";
 import dashboardLoader from "./loaders/admin/dashboardLoader";
 import { BlogsAdmin } from "@/pages/admin/Blogs";
 import allBlogsLoader from "./loaders/admin/allBlogsLoader";
+import { BlogCreate } from "@/pages/admin/BlogCreate";
+import blogCreateAction from "./loaders/admin/BlogCreateAction";
 
 
 
@@ -88,6 +90,9 @@ const router = createBrowserRouter([
       },
       {
         path: "blogs/create",
+        Component: BlogCreate,
+        action: blogCreateAction,
+        handle: { breadcrumb: "Create a new Blog" }
       },
       {
         path: "blogs/:slug/edit",

@@ -1,5 +1,5 @@
 import { Link, useLocation, useNavigation } from "react-router"
-import { Sidebar, SidebarTrigger } from "./ui/sidebar"
+import { SidebarTrigger } from "./ui/sidebar"
 import { Separator } from "./ui/separator"
 import { Button } from "./ui/button"
 import { ThemeToggle } from "./ThemToggle"

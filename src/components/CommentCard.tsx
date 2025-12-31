@@ -95,7 +95,7 @@ export const CommentCard = ({ content, likesCount, user, blog, createdAt }: Prop
 
         {blog && (
           <>
-            <div className="max-w-80 grid grid-cols-[120px_minmax(200px,_1fr)] gap-3 @max-3xl:hidden">
+            <div className="max-w-80 grid grid-cols-[120px_minmax(200px,1fr)] gap-3 @max-3xl:hidden">
               <AspectRatio
                 ratio={21 / 9}
                 className="rounded-lg overflow-hidden"

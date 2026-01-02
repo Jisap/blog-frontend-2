@@ -24,6 +24,8 @@ import { BlogsAdmin } from "@/pages/admin/Blogs";
 import allBlogsLoader from "./loaders/admin/allBlogsLoader";
 import { BlogCreate } from "@/pages/admin/BlogCreate";
 import blogCreateAction from "./loaders/admin/BlogCreateAction";
+import { BlogEdit } from "@/pages/admin/BlogEdit";
+import blogEditAction from "./loaders/admin/blogEditAction";
 
 
 
@@ -96,6 +98,10 @@ const router = createBrowserRouter([
       },
       {
         path: "blogs/:slug/edit",
+        Component: BlogEdit,
+        loader: blogDetailLoader,
+        action: blogEditAction,
+        handle: { breadcrumb: "Edit Blog" }
       },
       {
         path: "comments",

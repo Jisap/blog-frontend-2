@@ -68,7 +68,7 @@ export const BlogForm: React.FC<BlogFormProps> = ({ defaultValue, onSubmit }) =>
                   <Input
                     type="file"
                     accept=",jpg, jpeg, png, webp"
-                    name="banner_image"
+                    name="banner_image" // banner_image
                     className="sr-only"
                     onChange={(event) => {
                       if (!event.target.files) return;
@@ -133,7 +133,7 @@ export const BlogForm: React.FC<BlogFormProps> = ({ defaultValue, onSubmit }) =>
       </div>
 
       <Textarea
-        name="title"
+        name="title" // title
         maxLength={180}
         className="!text-4xl font-semibold tracking-tight border-none !ring-0 !bg-transparent px-0 resize-none shadow-none"
         placeholder="New post title here..."
@@ -149,7 +149,7 @@ export const BlogForm: React.FC<BlogFormProps> = ({ defaultValue, onSubmit }) =>
       <div className="relative border inset-ring-border rounded-xl">
         <Tiptap
           onUpdate={({ editor }) => setData((prevData) => ({ ...prevData, content: editor.getHTML() }))}
-          content={data.content}
+          content={data.content} // content
         />
       </div>
 
@@ -157,9 +157,9 @@ export const BlogForm: React.FC<BlogFormProps> = ({ defaultValue, onSubmit }) =>
         <Button
           variant="outline"
           onClick={() => onSubmit({
-            banner_image: data.banner_image,
-            title: data.title,
-            content: data.content,
+            banner_image: data.banner_image, // banner_image
+            title: data.title,               // title
+            content: data.content,           // content
           }, "draft")}
         >
           Save as draft
@@ -167,9 +167,9 @@ export const BlogForm: React.FC<BlogFormProps> = ({ defaultValue, onSubmit }) =>
 
         <Button
           onClick={() => onSubmit({
-            banner_image: data.banner_image,
-            title: data.title,
-            content: data.content,
+            banner_image: data.banner_image, // banner_image
+            title: data.title,               // title
+            content: data.content,           // content
           }, "published")}
         >
           {status === "draft" ? "Publish" : "Save changes"}

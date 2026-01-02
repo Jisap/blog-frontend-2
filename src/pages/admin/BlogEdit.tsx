@@ -7,8 +7,9 @@ import type { Blog } from "@/types";
 
 export const BlogEdit = () => {
 
-  const loaderData = useLoaderData() as {blog: Blog};
+  const loaderData = useLoaderData() as { blog: Blog };
   const fetcher = useFetcher();
+
 
   const blog = loaderData.blog;
 
@@ -24,11 +25,12 @@ export const BlogEdit = () => {
         onSubmit={({ banner_image, title, content }, status) => {
 
           const formData = new FormData();
-          
-          if(banner_image) formData.append("banner_image", banner_image);
-          if(title !== blog.title) formData.append("title", title);
-          if(content !== blog.content) formData.append("content", content);
-          if(status !== blog.status) formData.append("status", status);
+
+          if (banner_image) formData.append("banner_image", banner_image);
+          if (title !== blog.title) formData.append("title", title);
+          if (content !== blog.content) formData.append("content", content);
+          if (status !== blog.status) formData.append("status", status);
+          formData.append("blogId", blog._id);
 
           const submitPromise = fetcher.submit(formData, { // Este submit llama a la action -> llama a la api con la data
             method: "put",

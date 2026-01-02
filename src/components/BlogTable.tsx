@@ -23,7 +23,6 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
@@ -50,7 +49,6 @@ import { Loader2Icon, MoreHorizontalIcon } from "lucide-react";
 import type { ColumnDef } from "@tanstack/react-table";
 import type { Blog, User } from "@/types";
 import type { Variants } from "motion/react";
-import { clsx } from 'clsx';
 
 
 interface BlogTableProps<TData, TValue> {
@@ -140,6 +138,7 @@ const BlogActionDropdown = ({ blog }: { blog: Blog }) => {
                 onClick={() => {
                   const formData = new FormData();
                   formData.append("status", isPublished ? "draft" : "published"); // Aquí se determina el nuevo estado. Al abrir el modal se determina cual es el estado actual y en consecuencia cual será el nuevo
+                  formData.append("blogId", blog._id);
 
                   fetcher.submit(formData, {
                     action: `/admin/blogs/${blog.slug}/edit`, // Se envía al servidor el slug y estado de la publicación

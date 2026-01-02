@@ -18,7 +18,6 @@ const blogCreateAction: ActionFunction = async ({ request }) => {
     const response = await bitblogApi.post(`/blogs`, formData, {
       headers: {
         Authorization: `Bearer ${accessToken}`,
-        "Content-Encoding": "multipart/form-data"
       }
     });
 

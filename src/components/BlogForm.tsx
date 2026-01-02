@@ -137,10 +137,10 @@ export const BlogForm: React.FC<BlogFormProps> = ({ defaultValue, onSubmit }) =>
         maxLength={180}
         className="!text-4xl font-semibold tracking-tight border-none !ring-0 !bg-transparent px-0 resize-none shadow-none"
         placeholder="New post title here..."
-        onChange={(evente) =>
+        onChange={(event) =>
           setData((prevData) => ({
             ...prevData,
-            title: evente.target.value
+            title: event.target.value
           }))
         }
         value={data.title}

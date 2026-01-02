@@ -5,9 +5,9 @@ import type { ActionResponse } from "@/types";
 
 
 
-const blogEditAction: ActionFunction = async ({ request, params }) => {
+const blogEditAction: ActionFunction = async ({ request }) => {
   const formData = await request.formData();               // Publish or draft
-  const slug = params.slug;                                // Slug desde la ruta
+  let blogId = formData.get("blogId") as string;           // ID del blog desde el formData
   const accessToken = localStorage.getItem("accessToken"); // Token de acceso
 
   if (!accessToken) {
@@ -15,14 +15,15 @@ const blogEditAction: ActionFunction = async ({ request, params }) => {
   }
 
   try {
-    const response = await bitblogApi.put(`/blogs/${slug}`, formData, {
-      headers:{
+    const response = await bitblogApi.put(`/blogs/${blogId}`, formData, {
+      headers: {
         Authorization: `Bearer ${accessToken}`,
         "Content-Encoding": "multipart/form-data"
       }
     });
 
     const responseData = response.data;
+    console.log("Update Success:", responseData);
 
     return {
       ok: true,
@@ -31,9 +32,10 @@ const blogEditAction: ActionFunction = async ({ request, params }) => {
 
   } catch (error) {
     if (error instanceof AxiosError) {
+      console.error("Update Error:", error.response?.status, error.response?.data);
       return {
         ok: false,
-        err: error.response?.data
+        err: error.response?.data || { message: "Error 404: Route not found or blog not found in backend" }
       } as ActionResponse
     }
 

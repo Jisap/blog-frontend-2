@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
-import { useCallback, useMemo } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, Fragment } from "react";
 import Avatar from "react-avatar";
 import { useFetcher, useLoaderData, useNavigate } from "react-router";
 import { toast } from "sonner";
@@ -17,10 +17,11 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
-import { ArrowLeftIcon, Facebook, LinkedinIcon, LinkIcon, MessageSquareIcon, Share, ShareIcon, ThumbsUpIcon, TwitterIcon } from "lucide-react";
-import type { Blog } from "@/types";
+import { ArrowLeftIcon, ChevronDownIcon, ChevronUpIcon, Facebook, LinkedinIcon, LinkIcon, Loader2Icon, MessageSquareIcon, Share, ShareIcon, ThumbsUpIcon, TwitterIcon } from "lucide-react";
+import type { Blog, Comment } from "@/types";
 import type { DropdownMenuProps } from "@radix-ui/react-dropdown-menu"
 import { getReadingTime, getUsername } from "@/lib/utils";
+import { CommentCard } from "@/components/CommentCard";
 
 
 interface ShareDropdownProps extends DropdownMenuProps {
@@ -108,6 +109,8 @@ export const BlogDetail = () => {
 
   const navigate = useNavigate();
   const fetcher = useFetcher();
+  const commentsFetcher = useFetcher<Comment[]>(); // Fetcher específico para cargar comentarios
+  const formRef = useRef<HTMLFormElement>(null);
   const isSubmitting = fetcher.state === "submitting";
   const { blog } = useLoaderData() as { blog: Blog };
   const editor = useEditor({
@@ -117,9 +120,30 @@ export const BlogDetail = () => {
     autofocus: false,
   });
 
+  const [areCommentsVisible, setAreCommentsVisible] = useState(false);
+
   // Optimistic UI: Si hay un envío de formulario activo (fetcher.formData existe),
   // asumimos que el comentario se ha creado y sumamos 1 visualmente al contador.
   const optimisticCommentsCount = fetcher.formData ? blog.commentsCount + 1 : blog.commentsCount;
+
+
+  const handleToggleComments = () => {                          // Manejador para mostrar/ocultar comentarios
+    if (!areCommentsVisible && !commentsFetcher.data) {         // Si el estado de commentsVisible es false y no hay datos
+      commentsFetcher.load(`/api/comments/blog/${blog._id}`);   // Cargamos los comentarios
+    }
+    setAreCommentsVisible(!areCommentsVisible);                 // Cambiamos el estado de commentsVisible
+  };
+
+  // Limpiar el formulario cuando el comentario se envíe correctamente
+  useEffect(() => {
+    if (fetcher.state === "idle" && (fetcher.data as any)?.ok) {
+      formRef.current?.reset();
+      // Recargar comentarios si se acaba de enviar uno nuevo exitosamente
+      if (areCommentsVisible) {
+        commentsFetcher.load(`/api/comments/blog/${blog._id}`);
+      }
+    }
+  }, [fetcher.state, fetcher.data, areCommentsVisible, blog._id, commentsFetcher]);
 
   return (
     <Page>
@@ -215,7 +239,7 @@ export const BlogDetail = () => {
         <div className="space-y-6">
           <h3 className="text-2xl font-semibold">Comments</h3>
 
-          <fetcher.Form method="post" className="space-y-4">
+          <fetcher.Form method="post" className="space-y-4" ref={formRef}>
             <input type="hidden" name="blogId" value={blog._id} />
             <textarea
               name="content"
@@ -229,6 +253,43 @@ export const BlogDetail = () => {
               </Button>
             </div>
           </fetcher.Form>
+
+          {/* Botón para cargar/ver comentarios */}
+          {optimisticCommentsCount > 0 && (
+            <div className="mt-8">
+              <Button
+                variant="outline"
+                className="w-full"
+                onClick={handleToggleComments} // Carga comentarios y cambia el estado de areCommentsVisible
+                disabled={commentsFetcher.state === "loading"}
+              >
+                {commentsFetcher.state === "loading" ? (
+                  <Loader2Icon className="animate-spin mr-2" />
+                ) : areCommentsVisible ? (
+                  <ChevronUpIcon className="mr-2" />
+                ) : (
+                  <ChevronDownIcon className="mr-2" />
+                )}
+                {areCommentsVisible ? "Hide Comments" : `Show ${optimisticCommentsCount} Comments`}
+              </Button>
+
+              {areCommentsVisible && commentsFetcher.data && ( // Si areCommentsVisible es true y hay datos se muestran los comentarios
+                <div className="mt-6 space-y-6 animate-in fade-in slide-in-from-top-4 duration-500">
+                  {commentsFetcher.data.map((comment) => (
+                    <CommentCard
+                      key={comment._id}
+                      commentId={comment._id}
+                      content={comment.content}
+                      likesCount={comment.likesCount}
+                      user={comment.user}
+                      blog={null} // No mostramos la info del blog aquí
+                      createdAt={comment.createdAt}
+                    />
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </article>
     </Page>

@@ -28,7 +28,7 @@ type Props = {
   content: string;
   likesCount: number;
   user: User | null;
-  blog: Blog;
+  blog?: Blog | null;
   createdAt: string;
 }
 

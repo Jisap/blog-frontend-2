@@ -28,7 +28,7 @@ const createCommentAction = async ({ request }: ActionFunctionArgs) => {
     });
 
     toast.success("Comment posted successfully");
-    return null; // Retornar null revalidará los loaders de la página (actualizando contadores/listas)
+    return { ok: true };
   } catch (error) {
     if (error instanceof AxiosError) {
       const message = error.response?.data?.message || "Failed to post comment";
@@ -36,7 +36,7 @@ const createCommentAction = async ({ request }: ActionFunctionArgs) => {
     } else {
       toast.error("An unexpected error occurred");
     }
-    return null;
+    return { ok: false };
   }
 };
 

@@ -30,6 +30,7 @@ import { CommentsAdmin } from "@/pages/admin/Comments";
 import allCommentLoader from "./loaders/admin/allCommentLoader";
 import createCommentAction from "./loaders/user/createComment";
 import deleteCommentAction from "./loaders/admin/deleteComment";
+import getCommentsByBlogLoader from "./loaders/user/getCommentsByBlogLoader";
 
 
 
@@ -121,6 +122,11 @@ const router = createBrowserRouter([
         path: "users",
       }
     ]
+  },
+  // Ruta de recurso para cargar comentarios de un blog específico bajo demanda
+  {
+    path: "api/comments/blog/:blogId",
+    loader: getCommentsByBlogLoader
   },
   {
     path: "/settings"

@@ -26,6 +26,8 @@ import { BlogCreate } from "@/pages/admin/BlogCreate";
 import blogCreateAction from "./loaders/admin/BlogCreateAction";
 import { BlogEdit } from "@/pages/admin/BlogEdit";
 import blogEditAction from "./loaders/admin/blogEditAction";
+import { CommentsAdmin } from "@/pages/admin/Comments";
+import allCommentLoader from "./loaders/admin/allCommentLoader";
 
 
 
@@ -105,6 +107,9 @@ const router = createBrowserRouter([
       },
       {
         path: "comments",
+        Component: CommentsAdmin,
+        loader: allCommentLoader,
+        handle: { breadcrumb: "Comments" }
       },
       {
         path: "users",

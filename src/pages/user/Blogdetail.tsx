@@ -214,11 +214,6 @@ export const BlogDetail = () => {
               dateStyle: "medium",
             })}
           </div>
-
-          {/* DEBUG INFO: Remove after fixing */}
-          <div className="ml-auto text-xs text-red-500 font-mono">
-            Debug: UserID: {user?._id || "Missing"} | Liked: {String(optimisticIsLiked)}
-          </div>
         </div>
 
         <Separator />

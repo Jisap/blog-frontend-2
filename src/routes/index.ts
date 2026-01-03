@@ -28,6 +28,8 @@ import { BlogEdit } from "@/pages/admin/BlogEdit";
 import blogEditAction from "./loaders/admin/blogEditAction";
 import { CommentsAdmin } from "@/pages/admin/Comments";
 import allCommentLoader from "./loaders/admin/allCommentLoader";
+import createCommentAction from "./loaders/user/createComment";
+
 
 
 
@@ -67,6 +69,7 @@ const router = createBrowserRouter([
         path: "blogs/:slug",
         Component: BlogDetail,
         loader: blogDetailLoader,
+        action: createCommentAction,
       },
       {
         path: "about",

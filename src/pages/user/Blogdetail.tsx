@@ -6,7 +6,7 @@ import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { useCallback, useMemo } from "react";
 import Avatar from "react-avatar";
-import { useLoaderData, useNavigate } from "react-router";
+import { useFetcher, useLoaderData, useNavigate } from "react-router";
 import { toast } from "sonner";
 
 
@@ -107,6 +107,8 @@ export const ShareDropdown = ({ blogTitle, children, ...props }: ShareDropdownPr
 export const BlogDetail = () => {
 
   const navigate = useNavigate();
+  const fetcher = useFetcher();
+  const isSubmitting = fetcher.state === "submitting";
   const { blog } = useLoaderData() as { blog: Blog };
   const editor = useEditor({
     extensions: [StarterKit],
@@ -114,6 +116,10 @@ export const BlogDetail = () => {
     editable: false,
     autofocus: false,
   });
+
+  // Optimistic UI: Si hay un envío de formulario activo (fetcher.formData existe),
+  // asumimos que el comentario se ha creado y sumamos 1 visualmente al contador.
+  const optimisticCommentsCount = fetcher.formData ? blog.commentsCount + 1 : blog.commentsCount;
 
   return (
     <Page>
@@ -172,7 +178,7 @@ export const BlogDetail = () => {
 
           <Button variant="ghost">
             <MessageSquareIcon />
-            {blog.commentsCount}
+            {optimisticCommentsCount}
           </Button>
 
           <ShareDropdown blogTitle={blog.title}>
@@ -203,6 +209,27 @@ export const BlogDetail = () => {
         <EditorContent
           editor={editor}
         />
+
+        <Separator className="my-12" />
+
+        <div className="space-y-6">
+          <h3 className="text-2xl font-semibold">Comments</h3>
+
+          <fetcher.Form method="post" className="space-y-4">
+            <input type="hidden" name="blogId" value={blog._id} />
+            <textarea
+              name="content"
+              className="flex min-h-[100px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+              placeholder="Share your thoughts..."
+              required
+            />
+            <div className="flex justify-end">
+              <Button type="submit" disabled={isSubmitting}>
+                {isSubmitting ? "Posting..." : "Post Comment"}
+              </Button>
+            </div>
+          </fetcher.Form>
+        </div>
       </article>
     </Page>
   )

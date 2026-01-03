@@ -18,10 +18,11 @@ import {
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import { ArrowLeftIcon, ChevronDownIcon, ChevronUpIcon, Facebook, LinkedinIcon, LinkIcon, Loader2Icon, MessageSquareIcon, Share, ShareIcon, ThumbsUpIcon, TwitterIcon } from "lucide-react";
-import type { Blog, Comment } from "@/types";
+import type { Blog, Comment, User } from "@/types";
 import type { DropdownMenuProps } from "@radix-ui/react-dropdown-menu"
-import { getReadingTime, getUsername } from "@/lib/utils";
+import { cn, getReadingTime, getUsername } from "@/lib/utils";
 import { CommentCard } from "@/components/CommentCard";
+import { useUser } from "@/hooks/useUser";
 
 
 interface ShareDropdownProps extends DropdownMenuProps {
@@ -108,7 +109,9 @@ export const ShareDropdown = ({ blogTitle, children, ...props }: ShareDropdownPr
 export const BlogDetail = () => {
 
   const navigate = useNavigate();
+  const user = useUser();
   const fetcher = useFetcher();
+  const likeFetcher = useFetcher(); // Fetcher específico para likes
   const commentsFetcher = useFetcher<Comment[]>(); // Fetcher específico para cargar comentarios
   const formRef = useRef<HTMLFormElement>(null);
   const isSubmitting = fetcher.state === "submitting";
@@ -126,12 +129,33 @@ export const BlogDetail = () => {
   // asumimos que el comentario se ha creado y sumamos 1 visualmente al contador.
   const optimisticCommentsCount = fetcher.formData ? blog.commentsCount + 1 : blog.commentsCount;
 
+  // --- Lógica para Likes ---
 
-  const handleToggleComments = () => {                          // Manejador para mostrar/ocultar comentarios
-    if (!areCommentsVisible && !commentsFetcher.data) {         // Si el estado de commentsVisible es false y no hay datos
-      commentsFetcher.load(`/api/comments/blog/${blog._id}`);   // Cargamos los comentarios
+  // 1. Obtenemos el estado más reciente del blog, combinando los datos iniciales del loader
+  // con cualquier dato actualizado que haya devuelto la acción de like/unlike.
+  const likeActionData = likeFetcher.data as { isLiked?: boolean; likesCount?: number; ok?: boolean } | undefined;
+  const isLiked = likeActionData?.isLiked ?? blog.isLiked;
+  const likesCount = likeActionData?.likesCount ?? blog.likesCount;
+
+  // 2. Calculamos el estado optimista para la UI mientras una petición está en curso.
+  const isLikePending = likeFetcher.state !== "idle";
+  const submissionIntent = likeFetcher.formData?.get("intent");
+
+  const optimisticIsLiked = isLikePending
+    ? submissionIntent === "like" // Si la intención es "like", mostramos el icono relleno.
+    : isLiked;                   // Si no, mostramos el estado actual real.
+
+  const optimisticLikesCount = isLikePending
+    ? likesCount + (submissionIntent === "like" ? 1 : -1) // Sumamos o restamos al contador actual.
+    : likesCount;
+
+  // Manejador para mostrar/ocultar comentarios
+  const handleToggleComments = () => {
+    if (!areCommentsVisible && !commentsFetcher.data) {
+      // Si se van a mostrar y no hay datos, cargarlos
+      commentsFetcher.load(`/api/comments/blog/${blog._id}`);
     }
-    setAreCommentsVisible(!areCommentsVisible);                 // Cambiamos el estado de commentsVisible
+    setAreCommentsVisible(!areCommentsVisible);
   };
 
   // Limpiar el formulario cuando el comentario se envíe correctamente
@@ -190,14 +214,49 @@ export const BlogDetail = () => {
               dateStyle: "medium",
             })}
           </div>
+
+          {/* DEBUG INFO: Remove after fixing */}
+          <div className="ml-auto text-xs text-red-500 font-mono">
+            Debug: UserID: {user?._id || "Missing"} | Liked: {String(optimisticIsLiked)}
+          </div>
         </div>
 
         <Separator />
 
         <div className="flex items-center gap-2 my-2">
-          <Button variant="ghost">
-            <ThumbsUpIcon />
-            {blog.likesCount}
+          <Button
+            variant="ghost"
+            onClick={() => {
+              if (!user) {
+                toast.error("Please login to like this post");
+                return navigate("/login");
+              }
+
+
+              // Aseguramos obtener el ID correctamente
+              const userId = user._id;
+
+              if (!userId) {
+                toast.error("Session invalid. Please login again.");
+                // Optional: navigate("/login");
+                return;
+              }
+
+              likeFetcher.submit(
+                // 3. La intención del próximo clic se basa en el estado real actual, no en el optimista.
+                { userId, intent: isLiked ? "unlike" : "like" },
+                {
+                  method: isLiked ? "delete" : "post",
+                  action: `/api/likes/blog/${blog._id}`
+                }
+              );
+            }}
+          >
+            <ThumbsUpIcon
+              className={cn("transition-colors", optimisticIsLiked && "text-primary")}
+              fill={optimisticIsLiked ? "currentColor" : "none"}
+            />
+            {optimisticLikesCount}
           </Button>
 
           <Button variant="ghost">
@@ -260,7 +319,7 @@ export const BlogDetail = () => {
               <Button
                 variant="outline"
                 className="w-full"
-                onClick={handleToggleComments} // Carga comentarios y cambia el estado de areCommentsVisible
+                onClick={handleToggleComments}
                 disabled={commentsFetcher.state === "loading"}
               >
                 {commentsFetcher.state === "loading" ? (
@@ -273,7 +332,7 @@ export const BlogDetail = () => {
                 {areCommentsVisible ? "Hide Comments" : `Show ${optimisticCommentsCount} Comments`}
               </Button>
 
-              {areCommentsVisible && commentsFetcher.data && ( // Si areCommentsVisible es true y hay datos se muestran los comentarios
+              {areCommentsVisible && commentsFetcher.data && (
                 <div className="mt-6 space-y-6 animate-in fade-in slide-in-from-top-4 duration-500">
                   {commentsFetcher.data.map((comment) => (
                     <CommentCard

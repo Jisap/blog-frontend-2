@@ -31,6 +31,7 @@ export interface Blog {
   viewsCount: number;
   likesCount: number;
   commentsCount: number;
+  isLiked?: boolean;
   status: 'draft' | 'published';
   publishedAt: string;
   updatedAt: string;
@@ -104,7 +105,7 @@ export interface ActionResponse<T = unknown> {
 
 export interface AuthResponse {
   accessToken: string;
-  user: Pick<User, 'username' | 'email' | 'role'>;
+  user: Pick<User, 'username' | 'email' | 'role' | '_id'>;
 }
 
 export interface BlogCreateResponse {

@@ -31,6 +31,8 @@ import allCommentLoader from "./loaders/admin/allCommentLoader";
 import createCommentAction from "./loaders/user/createComment";
 import deleteCommentAction from "./loaders/admin/deleteComment";
 import getCommentsByBlogLoader from "./loaders/user/getCommentsByBlogLoader";
+import handleLikeAction from "./loaders/user/handleLike";
+
 
 
 
@@ -127,6 +129,10 @@ const router = createBrowserRouter([
   {
     path: "api/comments/blog/:blogId",
     loader: getCommentsByBlogLoader
+  },
+  {
+    path: "api/likes/blog/:blogId",
+    action: handleLikeAction
   },
   {
     path: "/settings"

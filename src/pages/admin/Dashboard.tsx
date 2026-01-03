@@ -141,6 +141,7 @@ export const Dashboard = () => {
               return (
                 <Fragment key={_id}>
                   <CommentCard
+                    commentId={_id}
                     content={content}
                     likesCount={likesCount}
                     user={user}
@@ -203,4 +204,3 @@ export const Dashboard = () => {
     </div>
   )
 }
-

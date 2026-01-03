@@ -58,6 +58,7 @@ export const CommentsAdmin = () => {
         {allComments.map(({ _id, content, likesCount, user, blog, createdAt }, index, array) => (
           <Fragment key={_id}>
             <CommentCard
+              commentId={_id}
               content={content}
               likesCount={likesCount}
               user={user}

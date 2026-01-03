@@ -1,6 +1,6 @@
 import { formatDistanceToNow } from "date-fns"
 import Avatar from "react-avatar"
-import { Link } from "react-router"
+import { Link, useFetcher } from "react-router"
 import { Button } from "./ui/button"
 import { AspectRatio } from "./ui/aspect-ratio"
 import {
@@ -8,10 +8,23 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { SquareArrowOutUpRightIcon, ThumbsUpIcon, TrashIcon } from "lucide-react"
+import { Loader2Icon, SquareArrowOutUpRightIcon, ThumbsUpIcon, TrashIcon } from "lucide-react"
 import type { User, Blog } from "@/types";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { toast } from "sonner";
 
 type Props = {
+  commentId: string;
   content: string;
   likesCount: number;
   user: User | null;
@@ -20,7 +33,11 @@ type Props = {
 }
 
 
-export const CommentCard = ({ content, likesCount, user, blog, createdAt }: Props) => {
+export const CommentCard = ({ commentId, content, likesCount, user, blog, createdAt }: Props) => {
+
+  const fetcher = useFetcher();
+  const isDeleting = fetcher.state !== "idle" && fetcher.formData?.get("commentId") === commentId;
+
   return (
     <div className="@container">
       <div className="group flex flex-col items-start gap-4 p-4 rounded-xl hover:bg-accent/25 @md:flex-row">
@@ -86,10 +103,42 @@ export const CommentCard = ({ content, likesCount, user, blog, createdAt }: Prop
               )}
             </Button>
 
-            <Button variant="ghost" aria-label="Remove comment">
-              <TrashIcon />
-              Remove
-            </Button>
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button
+                  variant="ghost"
+                  aria-label="Remove comment"
+                  disabled={isDeleting}
+                >
+                  {isDeleting ? <Loader2Icon className="animate-spin" /> : <TrashIcon />}
+                  Remove
+                </Button>
+              </AlertDialogTrigger>
+
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Delete this comment?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    This action cannot be undone. This will permanently delete the comment.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction onClick={() => {
+                    const formData = new FormData();
+                    formData.append("commentId", commentId);
+
+                    fetcher.submit(formData, {
+                      method: "delete",
+                    });
+                    toast.info("Deleting comment...");
+                  }}>
+                    Delete
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
           </div>
         </div>
 
@@ -130,4 +179,3 @@ export const CommentCard = ({ content, likesCount, user, blog, createdAt }: Prop
     </div>
   )
 }
-

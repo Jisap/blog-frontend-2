@@ -29,6 +29,7 @@ import blogEditAction from "./loaders/admin/blogEditAction";
 import { CommentsAdmin } from "@/pages/admin/Comments";
 import allCommentLoader from "./loaders/admin/allCommentLoader";
 import createCommentAction from "./loaders/user/createComment";
+import deleteCommentAction from "./loaders/admin/deleteComment";
 
 
 
@@ -87,6 +88,7 @@ const router = createBrowserRouter([
         path: "dashboard",
         Component: Dashboard,
         loader: dashboardLoader,
+        action: deleteCommentAction,
         handle: { breadcrumb: "Dashboard" }
       },
       {
@@ -112,6 +114,7 @@ const router = createBrowserRouter([
         path: "comments",
         Component: CommentsAdmin,
         loader: allCommentLoader,
+        action: deleteCommentAction,
         handle: { breadcrumb: "Comments" }
       },
       {
